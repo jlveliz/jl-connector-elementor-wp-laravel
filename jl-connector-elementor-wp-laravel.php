@@ -160,6 +160,11 @@ final class ElementorWPLaravelConnector {
              add_action( 'admin_notices', [ $this, 'admin_notice_minimum_php_version' ] );
              return false;
          }
+
+
+         add_action( 'elementor/controls/controls_registered', [ $this, 'init_controls' ] );
+	}
+
      }
 
 
@@ -236,7 +241,18 @@ final class ElementorWPLaravelConnector {
 
 		printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message );
 
-	}
+    }
+    
+
+
+    public function init_controls() {
+        // Include Control files
+		require_once( __DIR__ . '/controls/field-control.php' );
+
+		// Register control
+		\Elementor\Plugin::$instance->controls_manager->register_control( 'control-type-', new \Test_Control() );
+
+    }
     
 
 
