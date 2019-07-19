@@ -15,7 +15,7 @@ class FieldHandler
 
     
    private function getFields() {
-        $response = wp_remote_get("http://futbol.test/api/fields");
+        $response = wp_remote_get("http://futbol.local/api/fields");
         $fields = wp_remote_retrieve_body($response);
         $this->fields = $this->stringToArray($fields);
    }

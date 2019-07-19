@@ -18,10 +18,13 @@ require_once JL_PLUGIN_DIR .'classes/field-handler.php';
 
 class JLConnectorLaravel 
 {
-	public function __construct() {
-		
+	private function run_handlers() {
 		new FieldHandler();
 	}
+	public function __construct() {
+		add_action('init',[$this,'run_handlers']);
+	}
+
 }
 
 new JLConnectorLaravel();
