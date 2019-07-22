@@ -5,7 +5,9 @@ class jl_connector_elementor_wp_base {
 
     const PLUGIN_NAME = 'jl-connector-laravel-elementor';
 	
-	const PLUGIN_TITLE = 'JL Elementor - Laravel Connector';
+    const PLUGIN_TITLE = 'JL Elementor - Laravel Connector';
+    
+    const SUCCESS_CODE = 200;
 
     private $error_message;
 
@@ -42,9 +44,8 @@ class jl_connector_elementor_wp_base {
 
         $response = wp_remote_post($end_point .'/'. $this->route_login, ['body'=>$params]);
 
-
-        if (is_wp_error($response)) {
-            throw new Exception($response->get_error_message(),$response->get_error_code());
+        if (wp_remote_retrieve_response_code($response) != self::SUCCESS_CODE) {
+            return new WP_Error(wp_remote_retrieve_response_code($response),wp_remote_retrieve_response_message($response));
         } else {
             $body =  json_decode(wp_remote_retrieve_body( $response ), true) ;
             $this->set_token($body['token']);

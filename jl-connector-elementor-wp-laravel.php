@@ -24,11 +24,21 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 
 	private $error_message;
 
+	private $success_message;
+
 	public  function run_handlers() {
 		new FieldHandler();
 	}
 
 
+	public function jl_admin_notice_success() { 
+
+		$class = 'notice notice-success';
+    	$message = __( $this->success_message, self::PLUGIN_NAME );
+		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+	
+	}
+	
 	public function jl_admin_notice_error() { 
 
 		$class = 'notice notice-error';
@@ -114,21 +124,15 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 
 
 				//establece la conexion
+					$connect = $this->connect();
 
-				try {
-					if($this->connect()) {
-						$token = $this->get_token();
-						
-						echo $token;
+					if (is_wp_error($connect)) {
+						$this->error_message = $connect->get_error_code() .'-'.$connect->get_error_message()  ;
+						add_action('admin_notices', [$this,'jl_admin_notice_error']);
+					} else {
+						$this->success_message = "Configuración realizada satisfactoriamente";
+						add_action('admin_notices', [$this,'jl_admin_notice_success']);
 					}
-
-				} catch (Exception $e) {
-					var_dump($e);
-					die();
-					$this->error_message = 'error : ' .$e->getCode().' '. $e->getMessage();
-					add_action('admin_notices', [$this,'jl_admin_notice_error']);
-				}
-				
 
 			} else {
 				return false;
