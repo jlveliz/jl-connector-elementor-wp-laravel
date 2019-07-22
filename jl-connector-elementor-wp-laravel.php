@@ -26,11 +26,6 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 
 	private $success_message;
 
-	public  function run_handlers() {
-		new FieldHandler();
-	}
-
-
 	public function jl_admin_notice_success() { 
 
 		$class = 'notice notice-success';
@@ -147,10 +142,10 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 	public function jl_connector_laravel_elmentor_basic_config_field_cb($args) {
 		
 		// get_option()
-		$options = get_option('jl_connector_laravel_elementor');
+		$option = get_option($args['label_for']);
 	?>
 		 
-	<input type="<?php echo  $args['input_type']; ?>" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="jl_elementor_laravel_connector[<?php echo esc_attr( $args['label_for'] ); ?>]" <?php if(isset($args['width'])) : ?> style="width:<?php echo esc_attr($args['width']) ?>" <?php endif; ?> value='<?php echo $args['value']; ?>'/>
+	<input type="<?php echo  $args['input_type']; ?>" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="jl_elementor_laravel_connector[<?php echo esc_attr( $args['label_for'] ); ?>]" <?php if(isset($args['width'])) : ?> style="width:<?php echo esc_attr($args['width']) ?>" <?php endif; ?> value='<?php echo $option; ?>'/>
  <?php
 		
 	}
@@ -186,7 +181,7 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 				'wporg_custom_data' => 'custom',
 				'input_type'=>'text',
 				'width' => '50%',
-				'value' => get_option( 'jl_field_endpoint')
+				
 			]
 		);
 		
@@ -201,7 +196,6 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 				'class' => 'jl_url_field_username_row',
 				'wporg_custom_data' => 'custom',
 				'input_type'=>'text',
-				'value' => get_option( 'jl_field_username')
 			]
 		);
 		
@@ -217,7 +211,6 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 				'class' => 'jl_url_field_password_row',
 				'wporg_custom_data' => 'custom',
 				'input_type'=>'password',
-				'value' => get_option( 'jl_field_password')
 			]
 		);
 
@@ -265,33 +258,18 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 
 	}
 	public function __construct() {
-		add_action('init',[$this,'run_handlers']);
-		add_action('admin_menu',[$this,'jl_admin_config_submenu_page']);
 		add_action('admin_init',[$this,'jl_admin_register_config_elementor_laravel_connector']);
+		add_action('admin_menu',[$this,'jl_admin_config_submenu_page']);
+		
 	}
 
 	
 	
 }
 
-new JLConnectorLaravel();
+$jlConnector = new JLConnectorLaravel();
 
-
-
-// add_action( 'elementor/element/form/section_form_fields/before_section_end', 'custom_select_field', 10, 2 );
-// /**
-//  * Adding button fields
-//  * @param \Elementor\Widget_Base $button
-//  * @param array                  $args
-//  */
-// function custom_select_field( $button, $args ) {
-
-	
-
-// 	$button->add_control( 'fields',
-//         [
-//         	'label' => __( 'Canchas', 'elementor' ),
-//         	'type' => \Elementor\Controls_Manager::SWITCHER,
-//         ]
-// 	);
-// }
+if ($jlConnector->connect()) {
+	$token = $jlConnector->get_token();
+	new FieldHandler($token);
+}

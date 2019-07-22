@@ -15,7 +15,7 @@ class jl_connector_elementor_wp_base {
 
     private $token;
 
-    private $route_login = 'api/login'; 
+    private $route_login = '/login'; 
 
     public function jl_admin_notice_error () {
 
@@ -42,7 +42,9 @@ class jl_connector_elementor_wp_base {
             'password' => $password
         ];
 
-        $response = wp_remote_post($end_point .'/'. $this->route_login, ['body'=>$params]);
+        
+
+        $response = wp_remote_post($end_point . $this->route_login, ['body'=>$params]);
 
         if (wp_remote_retrieve_response_code($response) != self::SUCCESS_CODE) {
             return new WP_Error(wp_remote_retrieve_response_code($response),wp_remote_retrieve_response_message($response));
@@ -61,7 +63,7 @@ class jl_connector_elementor_wp_base {
 
 
     public function set_token($token) {
-        $this->token = $token;
+        $this->token = 'Bearer '.$token;
     }
 
     public function get_token() {
