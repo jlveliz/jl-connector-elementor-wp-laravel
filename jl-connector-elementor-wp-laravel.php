@@ -23,42 +23,46 @@ class JLConnectorLaravel
 	
 	const PLUGIN_TITLE = 'JL Elementor - Laravel Connector';
 
+	private $error_message;
+
 	public  function run_handlers() {
 		new FieldHandler();
 	}
 
 
+	public function jl_admin_notice_error() { 
 
-	public function jl_connector_laravel_elmentor_basic_config_field_password_cb($args) {
-		
-		
-		$options = get_option('jl_connector_laravel_elementor');
-	?>
-		 
-		<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="jl_elementor_laravel_connector[<?php echo esc_attr( $args['label_for'] ); ?>]"/>
- 	<?php
-		
+		$class = 'notice notice-error';
+    	$message = __( $this->error_message, self::PLUGIN_NAME );
+		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+	
 	}
-	
-	public function jl_connector_laravel_elmentor_basic_config_field_username_cb($args) {
-		
-		
-		$options = get_option('jl_connector_laravel_elementor');
-	?>
-		 
-		<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="jl_elementor_laravel_connector[<?php echo esc_attr( $args['label_for'] ); ?>]"/>
- 	<?php
-		
+
+
+	public function jl_admin_submit_elementor_laravel_connector() {
+		if ('POST' == $_SERVER['REQUEST_METHOD']) {
+			if(isset($_POST['jl_elementor_laravel_connector'])){
+				
+				if(!isset($_POST['jl_elementor_laravel_connector']['jl_field_endpoint']) || empty($_POST['jl_elementor_laravel_connector']['jl_field_endpoint'])) {
+					$this->error_message = "Por favor ingrese la url Endpoint";
+					add_action('admin_notices', [$this,'jl_admin_notice_error']);
+					return false;
+				}
+			} 
+
+
+			
+		}
 	}
-	
-	
-	public function jl_connector_laravel_elmentor_basic_config_field_endpoint_cb($args) {
+
+
+	public function jl_connector_laravel_elmentor_basic_config_field_cb($args) {
 		
 		// get_option()
 		$options = get_option('jl_connector_laravel_elementor');
 	?>
 		 
-		<input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="jl_elementor_laravel_connector[<?php echo esc_attr( $args['label_for'] ); ?>]" style="width:50%"/>
+	<input type="<?php echo  $args['input_type']; ?>" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="jl_elementor_laravel_connector[<?php echo esc_attr( $args['label_for'] ); ?>]" <?php if(isset($args['width'])) : ?> style="width:<?php echo esc_attr($args['width']) ?>" <?php endif; ?>/>
  <?php
 		
 	}
@@ -85,26 +89,29 @@ class JLConnectorLaravel
 		add_settings_field(
 			'jl_le_field_url_api' ,
 			__('Endpoint',self::PLUGIN_NAME),
-			[$this,'jl_connector_laravel_elmentor_basic_config_field_endpoint_cb'],
+			[$this,'jl_connector_laravel_elmentor_basic_config_field_cb'],
 			self::PLUGIN_NAME,
 			'jl_basic_config',
 			[
-				'label_for' => 'jl_field_endpint',
+				'label_for' => 'jl_field_endpoint',
 				'class' => 'jl_url_field_endpoint_row',
 				'wporg_custom_data' => 'custom',
+				'input_type'=>'text',
+				'width' => '50%'
 			]
 		);
 		
 		add_settings_field(
 			'jl_le_field_user_api' ,
 			__('Username',self::PLUGIN_NAME),
-			[$this,'jl_connector_laravel_elmentor_basic_config_field_username_cb'],
+			[$this,'jl_connector_laravel_elmentor_basic_config_field_cb'],
 			self::PLUGIN_NAME,
 			'jl_basic_config',
 			[
 				'label_for' => 'jl_field_username',
 				'class' => 'jl_url_field_username_row',
 				'wporg_custom_data' => 'custom',
+				'input_type'=>'text'
 			]
 		);
 		
@@ -112,13 +119,14 @@ class JLConnectorLaravel
 		add_settings_field(
 			'jl_le_field_password_api' ,
 			__('Password',self::PLUGIN_NAME),
-			[$this,'jl_connector_laravel_elmentor_basic_config_field_password_cb'],
+			[$this,'jl_connector_laravel_elmentor_basic_config_field_cb'],
 			self::PLUGIN_NAME,
 			'jl_basic_config',
 			[
 				'label_for' => 'jl_field_password',
 				'class' => 'jl_url_field_password_row',
 				'wporg_custom_data' => 'custom',
+				'input_type'=>'password'
 			]
 		);
 
@@ -131,7 +139,7 @@ class JLConnectorLaravel
 		<div class="wrap">
 			<h1><?php echo esc_html(get_admin_page_title()) ?></h1>
 
-			<form action="<?php menu_page_url(self::PLUGIN_NAME); ?>">
+			<form action="<?php menu_page_url(self::PLUGIN_NAME); ?>" method="POST">
 				<?php 
 					//output setting fields
 					settings_fields( 'jl_connector_laravel_elementor' );
@@ -152,7 +160,7 @@ class JLConnectorLaravel
 
 	public function jl_admin_config_submenu_page() {
 
-		add_submenu_page(
+		$hookname = add_submenu_page(
 			'options-general.php',
 			self::PLUGIN_TITLE,
 			self::PLUGIN_TITLE,
@@ -160,6 +168,9 @@ class JLConnectorLaravel
 			self::PLUGIN_NAME,
 			[$this,'jl_admin_config_elementor_laravel_connector']
 		);
+		//submit form
+		
+		add_action('load-'.$hookname,[$this,'jl_admin_submit_elementor_laravel_connector']);
 
 	}
 	public function __construct() {
