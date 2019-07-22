@@ -41,6 +41,11 @@ class JLConnectorLaravel
 
 	public function jl_admin_submit_elementor_laravel_connector() {
 		if ('POST' == $_SERVER['REQUEST_METHOD']) {
+
+			$update = false ;
+
+			if(array_key_exists('action',$_POST) && $_POST['action'] == 'update') $update = true;
+
 			if(isset($_POST['jl_elementor_laravel_connector'])){
 				
 				if(!isset($_POST['jl_elementor_laravel_connector']['jl_field_endpoint']) || empty($_POST['jl_elementor_laravel_connector']['jl_field_endpoint'])) {
@@ -48,7 +53,70 @@ class JLConnectorLaravel
 					add_action('admin_notices', [$this,'jl_admin_notice_error']);
 					return false;
 				}
-			} 
+
+
+				if(!isset($_POST['jl_elementor_laravel_connector']['jl_field_username']) || empty($_POST['jl_elementor_laravel_connector']['jl_field_username'])) {
+					$this->error_message = "Por favor ingrese un usuario";
+					add_action('admin_notices', [$this,'jl_admin_notice_error']);
+					return false;
+				}
+				
+				
+				if(!isset($_POST['jl_elementor_laravel_connector']['jl_field_password']) || empty($_POST['jl_elementor_laravel_connector']['jl_field_password'])) {
+					$this->error_message = "Por favor ingrese una Contraseña";
+					add_action('admin_notices', [$this,'jl_admin_notice_error']);
+					return false;
+
+				}
+
+				$sanitized_endpoint = sanitize_text_field($_POST['jl_elementor_laravel_connector']['jl_field_endpoint']);
+
+				if($sanitized_endpoint) {
+					if($update) {
+						update_option('jl_field_endpoint',$sanitized_endpoint);
+					} else {
+						add_option('jl_field_endpoint',$sanitized_endpoint);
+					}
+				} else {
+					$this->error_message = "Parámetro EndPoint mal ingresado";
+					add_action('admin_notices', [$this,'jl_admin_notice_error']);
+					return false;
+
+				}
+
+				$sanitized_username = sanitize_text_field($_POST['jl_elementor_laravel_connector']['jl_field_username']);
+
+				if ($sanitized_username) {
+					if($update) {
+						update_option('jl_field_username',$sanitized_username);
+					} else {
+						add_option('jl_field_username',$sanitized_username);
+					}
+				} else {
+					$this->error_message = "Parámetro username mal ingresado";
+					add_action('admin_notices', [$this,'jl_admin_notice_error']);
+					return false;
+				}
+
+				$sanitized_password = sanitize_text_field($_POST['jl_elementor_laravel_connector']['jl_field_password']);
+
+				if ($sanitized_password) {
+					
+					if($update) {
+						update_option('jl_field_password',$sanitized_password);
+					} else {
+						add_option('jl_field_password',$sanitized_password);
+					}
+				} else {
+					$this->error_message = "Parámetro password mal ingresado";
+					add_action('admin_notices', [$this,'jl_admin_notice_error']);
+					return false;
+				}
+
+
+			} else {
+				return false;
+			}
 
 
 			
@@ -62,7 +130,7 @@ class JLConnectorLaravel
 		$options = get_option('jl_connector_laravel_elementor');
 	?>
 		 
-	<input type="<?php echo  $args['input_type']; ?>" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="jl_elementor_laravel_connector[<?php echo esc_attr( $args['label_for'] ); ?>]" <?php if(isset($args['width'])) : ?> style="width:<?php echo esc_attr($args['width']) ?>" <?php endif; ?>/>
+	<input type="<?php echo  $args['input_type']; ?>" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="jl_elementor_laravel_connector[<?php echo esc_attr( $args['label_for'] ); ?>]" <?php if(isset($args['width'])) : ?> style="width:<?php echo esc_attr($args['width']) ?>" <?php endif; ?> value='<?php echo $args['value']; ?>'/>
  <?php
 		
 	}
@@ -97,7 +165,8 @@ class JLConnectorLaravel
 				'class' => 'jl_url_field_endpoint_row',
 				'wporg_custom_data' => 'custom',
 				'input_type'=>'text',
-				'width' => '50%'
+				'width' => '50%',
+				'value' => get_option( 'jl_field_endpoint')
 			]
 		);
 		
@@ -111,7 +180,8 @@ class JLConnectorLaravel
 				'label_for' => 'jl_field_username',
 				'class' => 'jl_url_field_username_row',
 				'wporg_custom_data' => 'custom',
-				'input_type'=>'text'
+				'input_type'=>'text',
+				'value' => get_option( 'jl_field_username')
 			]
 		);
 		
@@ -126,7 +196,8 @@ class JLConnectorLaravel
 				'label_for' => 'jl_field_password',
 				'class' => 'jl_url_field_password_row',
 				'wporg_custom_data' => 'custom',
-				'input_type'=>'password'
+				'input_type'=>'password',
+				'value' => get_option( 'jl_field_password')
 			]
 		);
 
