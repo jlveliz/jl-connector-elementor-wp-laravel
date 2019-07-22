@@ -1,4 +1,5 @@
 <?php
+use Mockery\CountValidator\Exception;
 
 /*
 * Plugin Name: Jl Connector Wp Elementor to Laravel
@@ -14,14 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define('JL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
+require_once JL_PLUGIN_DIR .'jl-connector-elementor-wp-base.php';
 require_once JL_PLUGIN_DIR .'classes/field-handler.php';
 
-class JLConnectorLaravel 
+class JLConnectorLaravel extends jl_connector_elementor_wp_base
 {
 	
-	const PLUGIN_NAME = 'jl-connector-laravel-elementor';
-	
-	const PLUGIN_TITLE = 'JL Elementor - Laravel Connector';
 
 	private $error_message;
 
@@ -113,6 +112,23 @@ class JLConnectorLaravel
 					return false;
 				}
 
+
+				//establece la conexion
+
+				try {
+					if($this->connect()) {
+						$token = $this->get_token();
+						
+						echo $token;
+					}
+
+				} catch (Exception $e) {
+					var_dump($e);
+					die();
+					$this->error_message = 'error : ' .$e->getCode().' '. $e->getMessage();
+					add_action('admin_notices', [$this,'jl_admin_notice_error']);
+				}
+				
 
 			} else {
 				return false;
