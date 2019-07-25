@@ -17,6 +17,7 @@ define('JL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 require_once JL_PLUGIN_DIR .'jl-connector-elementor-wp-base.php';
 require_once JL_PLUGIN_DIR .'classes/field-handler.php';
+require_once JL_PLUGIN_DIR .'classes/form-handler.php';
 
 class JLConnectorLaravel extends jl_connector_elementor_wp_base
 {
@@ -274,4 +275,5 @@ $jlConnector = new JLConnectorLaravel();
 if ($jlConnector->connect()) {
 	$token = $jlConnector->get_token();
 	new FieldHandler($token);
+	new FormHandler($token);
 }
