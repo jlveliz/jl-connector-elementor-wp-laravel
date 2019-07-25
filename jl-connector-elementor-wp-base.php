@@ -17,6 +17,13 @@ class jl_connector_elementor_wp_base {
 
     private $route_login = '/login'; 
 
+    
+    public function load_js_scripts() {
+        wp_register_script('field-handler',plugin_dir_url(__FILE__).'/assets/js/handler-field.js',['jquery'],true);
+        wp_enqueue_script('field-handler');
+    }
+    
+
     public function jl_admin_notice_error () {
 
         $class = 'notice notice-error';
@@ -69,6 +76,9 @@ class jl_connector_elementor_wp_base {
     public function get_token() {
         return $this->token;
     }
+
+
+    
 
 
 }

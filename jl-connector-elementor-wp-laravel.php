@@ -257,10 +257,12 @@ class JLConnectorLaravel extends jl_connector_elementor_wp_base
 		add_action('load-'.$hookname,[$this,'jl_admin_submit_elementor_laravel_connector']);
 
 	}
+
+	
 	public function __construct() {
 		add_action('admin_init',[$this,'jl_admin_register_config_elementor_laravel_connector']);
 		add_action('admin_menu',[$this,'jl_admin_config_submenu_page']);
-		
+		add_action('wp_enqueue_scripts',[$this,'load_js_scripts']);	
 	}
 
 	

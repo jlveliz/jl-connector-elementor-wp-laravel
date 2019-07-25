@@ -17,6 +17,7 @@ class FieldHandler
     private $token;
 
     private $route = "/fields";
+    
 
 
     private function getHeaders() {
@@ -113,7 +114,7 @@ class FieldHandler
         );
     ?>
         <div <?php echo $widget->get_render_attribute_string( 'select-wrapper-day'); ?> style='margin-bottom:12px'>
-            <select <?php echo $widget->get_render_attribute_string( 'select-day' . $item_index ); ?> id='field-select-day' disabled='disabled'>
+            <select <?php echo $widget->get_render_attribute_string( 'select-day' . $item_index ); ?>  disabled='disabled' data-element="jl-elementor-laravel-api-day">
               <option value="null">Selecciona el día</option>
             </select>
         </div>
@@ -140,11 +141,12 @@ class FieldHandler
         );
     ?>
         <div <?php echo $widget->get_render_attribute_string( 'select-wrapper-hour'); ?> style='margin-bottom:12px'>
-            <select <?php echo $widget->get_render_attribute_string( 'select-hour' . $item_index ); ?> id='field-select-hour' disabled='disabled'>
+            <select <?php echo $widget->get_render_attribute_string( 'select-hour' . $item_index ); ?> data-element="jl-elementor-laravel-api-hour" disabled='disabled'>
               <option value="null">Selecciona la hora</option>
             </select>
         </div>
-    
+        <input type="hidden" id="api-key-token" value="<?php echo $this->token; ?>">
+        <input type="hidden" id="api-url" value="<?php echo get_option('jl_field_endpoint'); ?>">
     <?php
 
     }
@@ -154,6 +156,5 @@ class FieldHandler
         $this->token = $token;
         add_filter( 'elementor_pro/forms/field_types', [ $this, 'add_field_type' ] );
         add_action( 'elementor_pro/forms/render_field/field', [ $this, 'render_select' ], 10, 3 );
-        wp_enqueue_script('field-handler',plugin_dir_url(__FILE__).'../assets/js/handler-field.js',['jquery'],true);
     }
 }
