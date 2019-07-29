@@ -93,6 +93,7 @@ class FieldHandler
         </div>
 
     <?php 
+   
         $widget->add_render_attribute(
 			[
 				'select-wrapper-day' => [
@@ -103,7 +104,7 @@ class FieldHandler
 					],
 				],
 				'select-day' . $item_index => [
-					'name' => $widget->get_attribute_name( $item ). '-day',
+					'name' =>"form_fields[day]",
 					'id' => $widget->get_attribute_id( $item ).'-day',
 					'class' => [
 						'elementor-field-textual',
@@ -130,7 +131,7 @@ class FieldHandler
 					],
 				],
 				'select-hour' . $item_index => [
-					'name' => $widget->get_attribute_name( $item ). '-hour',
+					'name' =>"form_fields[hour]",
 					'id' => $widget->get_attribute_id( $item ).'-hour',
 					'class' => [
 						'elementor-field-textual',
