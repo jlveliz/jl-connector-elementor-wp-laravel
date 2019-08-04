@@ -12,11 +12,11 @@ use ElementorPro\Plugin;
 class FieldHandler
 {
     
-    private $fields;
+    private $ages;
 
     private $token;
 
-    private $route = "/fields";
+    private $route = "/ages";
     
 
 
@@ -29,7 +29,7 @@ class FieldHandler
         ];
     }
     
-    private function getFields() {
+    private function getAges() {
 
         $end_point = get_option('jl_field_endpoint');
 
@@ -43,10 +43,11 @@ class FieldHandler
         $args = $this->getHeaders();
 
         $response = wp_remote_get($url, $args);
-        $fields = wp_remote_retrieve_body($response);
-        $this->fields = $this->stringToArray($fields);
+        $ages = wp_remote_retrieve_body($response);
+        $this->ages = $this->stringToArray($ages);
     }
-
+    
+    
     private function stringToArray ($string) {
         return json_decode($string,true);
     }
@@ -61,6 +62,39 @@ class FieldHandler
     
     public function render_select( $item, $item_index, $widget ) {
 
+        $widget->add_render_attribute(
+			[
+				'select-wrapper-age' => [
+					'class' => [
+						'elementor-age',
+						'elementor-select-wrapper',
+						esc_attr( $item['css_classes'] ),
+					],
+				],
+				'select-age' . $item_index => [
+					'name' =>"form_fields[age]",
+					'id' => $widget->get_attribute_id( $item ).'-age',
+					'class' => [
+						'elementor-field-textual',
+						'elementor-size-' . $item['input_size'],
+					],
+				],
+			]
+        );
+        $this->getAges();
+
+        ?>
+        <div <?php echo $widget->get_render_attribute_string( 'select-wrapper-age'); ?> style='margin-bottom:12px'>
+            <select <?php echo $widget->get_render_attribute_string( 'select-age' . $item_index ); ?>  data-element="jl-elementor-laravel-api-age">
+              <option value="null">Selecciona la edad</option>
+              <?php foreach($this->ages as $keyAge => $age) :  ?>
+              <option value="<?php echo $keyAge  ?>"><?php echo $age ?></option>
+              <?php endforeach; ?>
+            </select>
+        </div>
+        <?php
+        
+        
         $widget->add_render_attribute(
 			[
 				'select-wrapper' . $item_index => [
@@ -81,10 +115,10 @@ class FieldHandler
 			]
         );
         
-        $this->getFields();
+        
     ?>
         <div <?php echo $widget->get_render_attribute_string( 'select-wrapper' . $item_index ); ?> style='margin-bottom:12px'>
-            <select <?php echo $widget->get_render_attribute_string( 'select' . $item_index ); ?> data-element="jl-elementor-laravel-api-field">
+            <select <?php echo $widget->get_render_attribute_string( 'select' . $item_index ); ?> data-element="jl-elementor-laravel-api-field" disabled='disabled'>
               <option value="null">Selecciona la cancha más cercana</option>
                <?php for($i = 0; $i < count($this->fields); $i++  ):?>
                 <option value="<?php echo $this->fields[$i]['id'] ?>"><?php echo $this->fields[$i]['name'] ?></option>

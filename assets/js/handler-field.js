@@ -24,6 +24,35 @@ function days_of_week(keyDay) {
     if (found) return found;
 }
 
+var loadFieldsByAge = (idAge) => {
+
+    let fullRoute = APIURL+"/fields/" + idAge + "/available";
+    var Http = new XMLHttpRequest();
+    Http.open('GET',fullRoute, true);
+    Http.withCredentials = false;
+    Http.setRequestHeader('Accept','application/json');
+    Http.setRequestHeader('Authorization',TOKEN);
+
+    let promise = new Promise( 
+        (resolve) => {
+            Http.onreadystatechange = (e) => {
+                if(Http.readyState == 4 && Http.status == 200) {
+                    resolve(JSON.parse(Http.response))
+                } 
+            }
+        }, (reject) => {
+            reject({
+                status: Http.status,
+                statusText: Http.statusText
+            })
+        });
+
+    Http.send();
+
+    return promise;
+
+}
+
 var loadDaysByField = (idField)  => {
     let fullRoute = APIURL+"/groups/" + idField + "/available-schedule";
     
@@ -84,22 +113,21 @@ function loadScheduleByDayField(keyDay, fieldId) {
 }
 
 var detectChangeDay = (e) => {
+    
     var idDay = e.currentTarget.value;
-    var field = document.querySelector('[data-element]');
     var otherElements = document.querySelectorAll('[data-element]');
-    var keyAttrData = field.getAttribute('data-element');
     var hourEl;
     var fieldId = null;
     
-    if(keyAttrData == 'jl-elementor-laravel-api-field') {
-            
-        fieldId = field.value;
-
-    }
-
+  
     if(TOKEN) { 
         
         for (let index = 0; index < otherElements.length; index++) {
+            
+            if (otherElements[index].getAttribute('data-element') == 'jl-elementor-laravel-api-field') {
+                fieldId = otherElements[index].value;
+            }
+            
             if (otherElements[index].getAttribute('data-element') == 'jl-elementor-laravel-api-hour') {
                 hourEl = otherElements[index]; 
             }
@@ -197,6 +225,77 @@ var detectChangeField = (e) => {
     return false;
 }
 
+
+var detectChangeAge = (e) => {
+    
+    
+    var otherElements = document.querySelectorAll('[data-element]');
+   
+    if(TOKEN) {
+        var fieldEl;
+        var dayEl;
+        var hourEl;
+        for (let index = 0; index < otherElements.length; index++) {
+            
+            if (otherElements[index].getAttribute('data-element') == 'jl-elementor-laravel-api-field') {
+                fieldEl = otherElements[index];
+
+            }
+           
+            if (otherElements[index].getAttribute('data-element') == 'jl-elementor-laravel-api-day') {
+                dayEl = otherElements[index];
+
+            }
+            
+            if (otherElements[index].getAttribute('data-element') == 'jl-elementor-laravel-api-hour') {
+                hourEl = otherElements[index]; 
+            }
+            
+        }
+
+        if(!fieldEl && !dayEl && !hourEl) return false;
+
+        //disabled all elements hour and day
+        fieldEl.setAttribute('disabled','disabled');
+        dayEl.setAttribute('disabled','disabled');
+        hourEl.setAttribute('disabled','disabled');
+
+        var idAge = e.currentTarget.value;
+
+        if(parseInt(idAge)) {
+            loadFieldsByAge(idAge).then( 
+                (fields) => {
+                    
+                    fieldEl.removeAttribute('disabled');
+
+                    //addEventListener to fieldEl
+                    fieldEl.addEventListener('change',detectChangeField)
+
+                    //first Remove All Elements
+                    for(var i = fieldEl.options.length-1; i>0 ;i--){
+                        fieldEl.removeChild(fieldEl.options[i]);
+                    }
+                    
+
+                    //second: add Eelements
+                    for (var field in fields) {
+                        let opt = document.createElement('option');
+                        opt.value = fields[field].id;
+                        opt.text = fields[field].name;
+                        fieldEl.appendChild(opt);    
+                    }
+                }, 
+                (err) =>{
+
+                }
+            )
+        }
+
+    }
+
+    return false;
+}
+
 document.onreadystatechange = () => {
     
     // if(document.readyState == 'complete') {
@@ -206,13 +305,13 @@ document.onreadystatechange = () => {
         
         
         //can't touch name 'cancha' on elementor form
-        var field = document.querySelector('[data-element]');
+        var age = document.querySelector('[data-element]');
 
-        var keyAttrData = field.getAttribute('data-element');
+        var keyAttrData = age.getAttribute('data-element');
 
-        if(keyAttrData == 'jl-elementor-laravel-api-field') {
+        if(keyAttrData == 'jl-elementor-laravel-api-age') {
             
-            field.addEventListener('change',detectChangeField);
+            age.addEventListener('change',detectChangeAge);
 
         }
     
