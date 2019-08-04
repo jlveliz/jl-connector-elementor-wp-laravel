@@ -105,7 +105,7 @@ class FieldHandler
 					],
 				],
 				'select' . $item_index => [
-					'name' => $widget->get_attribute_name( $item ),
+					'name' => "form_fields[field]",
 					'id' => $widget->get_attribute_id( $item ),
 					'class' => [
 						'elementor-field-textual',
