@@ -88,7 +88,7 @@ class FieldHandler
             <select <?php echo $widget->get_render_attribute_string( 'select-age' . $item_index ); ?>  data-element="jl-elementor-laravel-api-age">
               <option value="null">Selecciona la edad</option>
               <?php foreach($this->ages as $keyAge => $age) :  ?>
-              <option value="<?php echo $keyAge  ?>"><?php echo $age ?></option>
+              <option value="<?php echo $keyAge  ?>"><?php echo $age ?> Años</option>
               <?php endforeach; ?>
             </select>
         </div>
