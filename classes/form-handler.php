@@ -62,17 +62,14 @@
                
                 
                 $response = wp_remote_post($url,$args);
+
+
+                $message = wp_remote_retrieve_body( $response );
+
                 
                 if($response['response']['code'] == 401 || $response['response']['code'] == 500) {
-                    echo "solicitud aprobada";
-                }
-
-                if (is_wp_error($response)) {
-                    $message = $response->get_error_message();
-                    var_dump($message);
-                    die();
-                } else {
-
+                    $handler->add_error_message($message)->send();
+                    
                 }
 
             }, 10, 2 );
