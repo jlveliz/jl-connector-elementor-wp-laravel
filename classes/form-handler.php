@@ -62,16 +62,25 @@
                
                 
                 $response = wp_remote_post($url,$args);
-                // var_dump($response);
-                // die();
+                
+                if($response['response']['code'] == 401 || $response['response']['code'] == 500) {
+                    echo "solicitud aprobada";
+                }
+
                 if (is_wp_error($response)) {
-                    // $message = $response->get_error_message();
-                    // die($message);
+                    $message = $response->get_error_message();
+                    var_dump($message);
+                    die();
                 } else {
 
                 }
 
             }, 10, 2 );
+
+
+
+
+            
         }
         
     }
