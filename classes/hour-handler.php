@@ -9,18 +9,18 @@ use Elementor\Widget_Base;
 use ElementorPro\Plugin;
 
 
-class FieldHandler
+class HourHandler
 {
     
 	private $token;
 
 	
 	private function get_type() {
-        return 'field';
+        return 'hour';
     }
 
     private function get_name() {
-        return __("Field", "elementor-pro");
+        return __("Hour", "elementor-pro");
     }
 
 
@@ -55,8 +55,8 @@ class FieldHandler
         
     ?>
         <div <?php echo $widget->get_render_attribute_string( 'select-wrapper' . $item_index ); ?>>
-            <select <?php echo $widget->get_render_attribute_string( 'select' . $item_index ); ?> data-element="jl-elementor-laravel-api-field" disabled='disabled'>
-              <option value="null">Selecciona la cancha más cercana</option>
+            <select <?php echo $widget->get_render_attribute_string( 'select' . $item_index ); ?> data-element="jl-elementor-laravel-api-hour" disabled='disabled'>
+              <option value="null">Seleccione la Hora</option>
             </select>
         </div>
 

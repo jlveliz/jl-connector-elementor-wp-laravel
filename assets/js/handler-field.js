@@ -253,7 +253,7 @@ var detectChangeAge = (e) => {
             
         }
 
-        if(!fieldEl && !dayEl && !hourEl) return false;
+        if(!fieldEl || !dayEl || !hourEl) return false;
 
         //disabled all elements hour and day
         fieldEl.setAttribute('disabled','disabled');
@@ -298,22 +298,22 @@ var detectChangeAge = (e) => {
 
 document.onreadystatechange = () => {
     
-    // if(document.readyState == 'complete') {
-
+    if(document.readyState == 'complete') {
         APIURL = document.getElementById('api-url').value;
         TOKEN = document.getElementById('api-key-token').value;
         
+        debugger
         
         //can't touch name 'cancha' on elementor form
         var age = document.querySelector('[data-element]');
-
+        
         var keyAttrData = age.getAttribute('data-element');
-
+        
         if(keyAttrData == 'jl-elementor-laravel-api-age') {
             
             age.addEventListener('change',detectChangeAge);
 
         }
     
-    // }
+    }
 }

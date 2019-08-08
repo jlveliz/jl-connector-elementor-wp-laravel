@@ -18,6 +18,8 @@ define('JL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 require_once JL_PLUGIN_DIR .'jl-connector-elementor-wp-base.php';
 require_once JL_PLUGIN_DIR .'classes/age-handler.php';
 require_once JL_PLUGIN_DIR .'classes/field-handler.php';
+require_once JL_PLUGIN_DIR .'classes/day-handler.php';
+require_once JL_PLUGIN_DIR .'classes/hour-handler.php';
 require_once JL_PLUGIN_DIR .'classes/form-handler.php';
 
 class JLConnectorLaravel extends jl_connector_elementor_wp_base
@@ -277,5 +279,7 @@ if ($jlConnector->connect()) {
 	$token = $jlConnector->get_token();
 	new AgeHandler($token);
 	new FieldHandler($token);
+	new DayHandler($token);
+	new HourHandler($token);
 	new FormHandler($token);
 }

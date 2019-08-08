@@ -9,18 +9,18 @@ use Elementor\Widget_Base;
 use ElementorPro\Plugin;
 
 
-class FieldHandler
+class DayHandler
 {
     
 	private $token;
 
 	
 	private function get_type() {
-        return 'field';
+        return 'day';
     }
 
     private function get_name() {
-        return __("Field", "elementor-pro");
+        return __("Day", "elementor-pro");
     }
 
 
@@ -55,8 +55,8 @@ class FieldHandler
         
     ?>
         <div <?php echo $widget->get_render_attribute_string( 'select-wrapper' . $item_index ); ?>>
-            <select <?php echo $widget->get_render_attribute_string( 'select' . $item_index ); ?> data-element="jl-elementor-laravel-api-field" disabled='disabled'>
-              <option value="null">Selecciona la cancha más cercana</option>
+            <select <?php echo $widget->get_render_attribute_string( 'select' . $item_index ); ?> data-element="jl-elementor-laravel-api-day" disabled='disabled'>
+              <option value="null">Seleccione el día</option>
             </select>
         </div>
 

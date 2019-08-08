@@ -7,9 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Elementor\Widget_Base;
 use ElementorPro\Plugin;
+use ElementorPro\Modules\Forms\Fields\Field_Base;
 
 
-class AgeHandler
+class AgeHandler 
 {
     
     private $ages;
@@ -45,6 +46,7 @@ class AgeHandler
         $response = wp_remote_get($url, $args);
         $ages = wp_remote_retrieve_body($response);
         $this->ages = $this->stringToArray($ages);
+        
     }
     
     
@@ -52,15 +54,23 @@ class AgeHandler
         return json_decode($string,true);
     }
 
+    
+    private function get_type() {
+        return 'age';
+    }
 
-    public function add_age_type( $field_types ) {
-        
-        $field_types['age'] = __( 'Age', 'elementor-pro' );
+    private function get_name() {
+        return __("Age", "elementor-pro");
+    }
 
+
+    public function register_age_type( $field_types ) {
+        $field_types[$this->get_type()] = $this->get_name();
+       
 		return $field_types;
     }
     
-    public function render_select( $item, $item_index, $widget ) {
+    public function render_age_select( $item, $item_index, $widget ) {
 
         $widget->add_render_attribute(
 			[
@@ -82,106 +92,21 @@ class AgeHandler
 			]
         );
         $this->getAges();
-
+       
         ?>
-        <div <?php echo $widget->get_render_attribute_string( 'select-wrapper'.$item_index); ?> style='margin-bottom:12px'>
-            <select <?php echo $widget->get_render_attribute_string( 'select' . $item_index ); ?>  data-element="jl-elementor-laravel-api-age">
-              <option value="null">Selecciona la edad de tu Hijo(a)</option>
-              <?php foreach($this->ages as $keyAge => $age) :  ?>
-              <option value="<?php echo $keyAge  ?>"><?php echo $age ?> Años</option>
-              <?php endforeach; ?>
+
+
+        <div <?php echo $widget->get_render_attribute_string( 'select-wrapper' . $item_index ); ?>>
+            <select <?php echo $widget->get_render_attribute_string( 'select' . $item_index ); ?> data-element="jl-elementor-laravel-api-age">
+              <option value="null">Selecciona la Edad del Niño(a)</option>
+               <?php foreach($this->ages as $age):?>
+                <option value="<?php echo $age ?>"><?php echo $age ?> Años</option>
+               <?php endforeach;?>
             </select>
         </div>
-        <?php
-        
-        
-        // $widget->add_render_attribute(
-		// 	[
-		// 		'select-wrapper' . $item_index => [
-		// 			'class' => [
-		// 				'elementor-field',
-		// 				'elementor-select-wrapper',
-		// 				esc_attr( $item['css_classes'] ),
-		// 			],
-		// 		],
-		// 		'select' . $item_index => [
-		// 			'name' => "form_fields[cancha]",
-		// 			'id' => $widget->get_attribute_id( $item ),
-		// 			'class' => [
-		// 				'elementor-field-textual',
-		// 				'elementor-size-' . $item['input_size'],
-		// 			],
-		// 		],
-		// 	]
-        // );
-        
-        
-    ?>
-        <!-- <div <?php //echo $widget->get_render_attribute_string( 'select-wrapper' . $item_index ); ?> style='margin-bottom:12px'>
-            <select <?php //echo $widget->get_render_attribute_string( 'select' . $item_index ); ?> data-element="jl-elementor-laravel-api-field" disabled='disabled'>
-              <option value="null">Selecciona la cancha más cercana</option>
-               <?php //for($i = 0; $i < count($this->fields); $i++  ):?>
-                <option value="<?php //echo $this->fields[$i]['id'] ?>"><?php //echo $this->fields[$i]['name'] ?></option>
-               <?php //endfor;?>
-            </select>
-        </div> -->
 
-    <?php 
-   
-        // $widget->add_render_attribute(
-		// 	[
-		// 		'select-wrapper-day' => [
-		// 			'class' => [
-		// 				'elementor-day',
-		// 				'elementor-select-wrapper',
-		// 				esc_attr( $item['css_classes'] ),
-		// 			],
-		// 		],
-		// 		'select-day' . $item_index => [
-		// 			'name' =>"form_fields[day]",
-		// 			'id' => $widget->get_attribute_id( $item ).'-day',
-		// 			'class' => [
-		// 				'elementor-field-textual',
-		// 				'elementor-size-' . $item['input_size'],
-		// 			],
-		// 		],
-		// 	]
-        // );
-    ?>
-        <!-- <div <?php //echo $widget->get_render_attribute_string( 'select-wrapper-day'); ?> style='margin-bottom:12px'>
-            <select <?php //echo $widget->get_render_attribute_string( 'select-day' . $item_index ); ?>  disabled='disabled' data-element="jl-elementor-laravel-api-day">
-              <option value="null">Selecciona el día</option>
-            </select>
-        </div> -->
-        
-    <?php 
-        //  $widget->add_render_attribute(
-		// 	[
-		// 		'select-wrapper-hour' => [
-		// 			'class' => [
-		// 				'elementor-hour',
-		// 				'elementor-select-wrapper',
-		// 				esc_attr( $item['css_classes'] ),
-		// 			],
-		// 		],
-		// 		'select-hour' . $item_index => [
-		// 			'name' =>"form_fields[hour]",
-		// 			'id' => $widget->get_attribute_id( $item ).'-hour',
-		// 			'class' => [
-		// 				'elementor-field-textual',
-		// 				'elementor-size-' . $item['input_size'],
-		// 			],
-		// 		],
-		// 	]
-        // );
-    ?>
-        <!-- <div <?php //echo $widget->get_render_attribute_string( 'select-wrapper-hour'); ?> style='margin-bottom:12px'>
-            <select <?php //echo $widget->get_render_attribute_string( 'select-hour' . $item_index ); ?> data-element="jl-elementor-laravel-api-hour" disabled='disabled'>
-              <option value="null">Selecciona la hora</option>
-            </select>
-        </div>-->
-        <input type="hidden" id="api-key-token" value="<?php //echo $this->token; ?>">
-        <input type="hidden" id="api-url" value="<?php //echo get_option('jl_field_endpoint'); ?>"> 
+        <input type="hidden" id="api-key-token" value="<?php echo $this->token; ?>">
+        <input type="hidden" id="api-url" value="<?php echo get_option('jl_field_endpoint'); ?>"> 
     <?php
 
     }
@@ -189,7 +114,9 @@ class AgeHandler
 
     public function __construct ($token) {
         $this->token = $token;
-        add_filter( 'elementor_pro/forms/field_types', [ $this, 'add_age_type' ] );
-        add_action( 'elementor_pro/forms/render_field/field', [ $this, 'render_select' ], 10, 3 );
+        add_filter( 'elementor_pro/forms/field_types', [ $this, 'register_age_type' ] );
+        $type = $this->get_type();
+        $actionName = "elementor_pro/forms/render_field/{$type}";
+        add_action($actionName, [ $this, 'render_age_select' ], 10, 3 );
     }
 }
