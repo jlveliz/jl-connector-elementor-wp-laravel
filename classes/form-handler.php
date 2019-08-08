@@ -56,7 +56,7 @@
                     ];
     
                     $args['body']['enrollment'] = [
-                        'field_id' => $raw_fields['field'],
+                        'field_id' => $raw_fields['cancha'],
                         'day' => $raw_fields['day'],
                         'hour' => $raw_fields['hour']
                     ];
