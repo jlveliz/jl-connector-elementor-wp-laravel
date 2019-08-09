@@ -44,7 +44,7 @@
                     $args['body'] = [
                         'name' => $raw_fields['nombre_hijo'],
                         'last_name' => $raw_fields['apellido_hijo'],
-                        'age' => $raw_fields['age'],
+                        'age' => $raw_fields['edad_hijo'],
     
                     ];
                     //representant
@@ -57,11 +57,10 @@
     
                     $args['body']['enrollment'] = [
                         'field_id' => $raw_fields['cancha'],
-                        'day' => $raw_fields['day'],
-                        'hour' => $raw_fields['hour']
+                        'day' => $raw_fields['dia'],
+                        'hour' => $raw_fields['hora']
                     ];
                    
-                    
                     $response = wp_remote_post($url,$args);
     
     

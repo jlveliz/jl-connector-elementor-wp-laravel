@@ -114,7 +114,15 @@ function loadScheduleByDayField(keyDay, fieldId) {
 
 var detectChangeDay = (e) => {
     
-    var idDay = e.currentTarget.value;
+    var daySelected = e.currentTarget.value;
+    var idDay = null;
+    
+    for (let i = 0; i <  e.currentTarget.options.length; i++) {
+        if(daySelected == e.currentTarget.options[i].value)
+            idDay = e.currentTarget.options[i].getAttribute('data-day');
+        
+    }
+
     var otherElements = document.querySelectorAll('[data-element]');
     var hourEl;
     var fieldId = null;
@@ -125,7 +133,13 @@ var detectChangeDay = (e) => {
         for (let index = 0; index < otherElements.length; index++) {
             
             if (otherElements[index].getAttribute('data-element') == 'jl-elementor-laravel-api-field') {
-                fieldId = otherElements[index].value;
+                
+                var fieldSelected = otherElements[index].value;
+                for (let i = 0; i < otherElements[index].options.length; i++) {
+                    if(otherElements[index].options[i].value == fieldSelected)
+                        fieldId = otherElements[index].options[i].getAttribute('data-field-id');
+                }
+                
             }
             
             if (otherElements[index].getAttribute('data-element') == 'jl-elementor-laravel-api-hour') {
@@ -167,7 +181,7 @@ var detectChangeField = (e) => {
     
     
     var otherElements = document.querySelectorAll('[data-element]');
-   
+    debugger
     if(TOKEN) {
         var dayEl;
         var hourEl;
@@ -189,7 +203,15 @@ var detectChangeField = (e) => {
         dayEl.setAttribute('disabled','disabled');
         hourEl.setAttribute('disabled','disabled');
 
-        var idField = e.currentTarget.value;
+        var fieldSelected = e.currentTarget.value;
+        var idField = null;
+
+        for (let i = 0; i < e.currentTarget.options.length; i++) {
+            if(e.currentTarget.options[i].value == fieldSelected)
+                idField = e.currentTarget.options[i].getAttribute('data-field-id');
+        }
+
+        
 
         if(parseInt(idField)) {
             loadDaysByField(idField).then( 
@@ -209,7 +231,8 @@ var detectChangeField = (e) => {
                     //second: add Eelements
                     for (var day in days) {
                         let opt = document.createElement('option');
-                        opt.value = days[day].day;
+                        opt.setAttribute('data-day',days[day].day);
+                        opt.value = days_of_week(days[day].day);
                         opt.text = days_of_week(days[day].day);
                         dayEl.appendChild(opt);    
                     }
@@ -265,7 +288,6 @@ var detectChangeAge = (e) => {
         if(parseInt(idAge)) {
             loadFieldsByAge(idAge).then( 
                 (fields) => {
-                    
                     fieldEl.removeAttribute('disabled');
 
                     //addEventListener to fieldEl
@@ -280,7 +302,8 @@ var detectChangeAge = (e) => {
                     //second: add Eelements
                     for (var field in fields) {
                         let opt = document.createElement('option');
-                        opt.value = fields[field].id;
+                        opt.setAttribute('data-field-id',fields[field].id);
+                        opt.value = fields[field].name;
                         opt.text = fields[field].name;
                         fieldEl.appendChild(opt);    
                     }
@@ -301,9 +324,7 @@ document.onreadystatechange = () => {
     if(document.readyState == 'complete') {
         APIURL = document.getElementById('api-url').value;
         TOKEN = document.getElementById('api-key-token').value;
-        
-        debugger
-        
+                
         //can't touch name 'cancha' on elementor form
         var age = document.querySelector('[data-element]');
         
