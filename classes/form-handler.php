@@ -22,9 +22,8 @@
         }
 
 
-        public function __construct($token) {
-            $this->token = $token;
-            add_action( 'elementor_pro/forms/new_record', function( $record, $handler ) {
+        public function process_form_to_laravel($record,$handler) {
+            
                 //make sure its our form
                 $form_name = $record->get_form_settings( 'form_name' );
                 
@@ -76,8 +75,23 @@
                 }
             
                
+        }
 
-            }, 10, 2 );
+
+        public function __construct($token) {
+            $this->token = $token;
+            add_action( 'elementor_pro/forms/new_record',[$this,'process_form_to_laravel'], 10, 2 );
+
+
+            add_action('elementor_pro/forms/process/tel',function($field, $record){
+                $field = $record->get_field(['id'=>'celular']);
+                $celular = substr($field['celular']['value'],1);
+                $field['celular']['value'] = $celular;
+                $newPhoneNumber = "+593".$field['celular']['value'];
+                $record->update_field('celular','value',$newPhoneNumber);
+                $record->update_field('celular','raw_value',$newPhoneNumber);
+                return $record;
+            },10,2);
 
 
 
