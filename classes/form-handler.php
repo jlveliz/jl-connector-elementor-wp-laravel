@@ -21,6 +21,48 @@
             ];
         }
 
+        private function get_code($length = 10) {
+            $caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            $caracteres .= "1234567890";
+            
+            $final = [];
+            
+            $characthers = str_shuffle($caracteres);
+
+            for($i=0;$i<=$length;$i++) {
+                $final[$i] = $characthers[$i]; }
+                //recorremos la array e imprimimos
+                $code = "";
+                foreach($final as $datos) {
+                
+                    $code .= $datos;
+                }
+            
+            return  $code;
+        }
+
+
+        public function process_phone_number($field, $record) {
+            $field = $record->get_field(['id'=>'celular']);
+            $celular = substr($field['celular']['value'],1);
+            $field['celular']['value'] = $celular;
+            $newPhoneNumber = "+593".$field['celular']['value'];
+            $record->update_field('celular','value',$newPhoneNumber);
+            $record->update_field('celular','raw_value',$newPhoneNumber);
+            return $record;
+        }
+
+
+        public function process_register_code($field, $record) {
+            $field = $record->get_field(['id'=>'codigo_registro']);
+            if ($field) {
+                $code = $this->get_code();
+                $record->update_field('codigo_registro','value',$code);
+                $record->update_field('codigo_registro','raw_value',$code);
+                return $record;
+            }
+        }
+
 
         public function process_form_to_laravel($record,$handler) {
             
@@ -77,22 +119,17 @@
                
         }
 
+        
+
 
         public function __construct($token) {
             $this->token = $token;
+            //procesa el numero telefonico
+            add_action('elementor_pro/forms/process/tel',[$this,'process_phone_number'],10,2);
+            //procesa el codigo de registro
+            add_action('elementor_pro/forms/process/hidden',[$this,'process_register_code'],10,2);
+            //procesa todo el formulario para laravel
             add_action( 'elementor_pro/forms/new_record',[$this,'process_form_to_laravel'], 10, 2 );
-
-
-            add_action('elementor_pro/forms/process/tel',function($field, $record){
-                $field = $record->get_field(['id'=>'celular']);
-                $celular = substr($field['celular']['value'],1);
-                $field['celular']['value'] = $celular;
-                $newPhoneNumber = "+593".$field['celular']['value'];
-                $record->update_field('celular','value',$newPhoneNumber);
-                $record->update_field('celular','raw_value',$newPhoneNumber);
-                return $record;
-            },10,2);
-
 
 
 
