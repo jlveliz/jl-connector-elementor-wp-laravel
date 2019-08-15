@@ -2,6 +2,12 @@
 var APIURL = null;
 var TOKEN = null;
 
+
+function animate(el, cssClass) {
+    debugger
+    el.parentElement.parentElement.style.cssText  = "display:block!important";
+}
+
 function days_of_week(keyDay) {
     var days = [
         { 'monday': 'Lunes' },
@@ -292,6 +298,9 @@ var detectChangeAge = (e) => {
 
                     //addEventListener to fieldEl
                     fieldEl.addEventListener('change',detectChangeField)
+
+                    //animate toogle
+                    animate(fieldEl,'elementor-field-type-field');
 
                     //first Remove All Elements
                     for(var i = fieldEl.options.length-1; i>0 ;i--){

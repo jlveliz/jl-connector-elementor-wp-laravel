@@ -18,9 +18,11 @@ class jl_connector_elementor_wp_base {
     private $route_login = '/login'; 
 
     
-    public function load_js_scripts() {
+    public function load_assets() {
         wp_register_script('field-handler',plugin_dir_url(__FILE__).'/assets/js/handler-field.js',['jquery'],true);
+        wp_register_style('field-handler', plugin_dir_url(__FILE__).'/assets/css/handler-field.css');
         wp_enqueue_script('field-handler');
+        wp_enqueue_style('field-handler');
     }
     
 

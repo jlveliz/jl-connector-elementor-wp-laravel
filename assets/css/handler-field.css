@@ -1,0 +1,5 @@
+.elementor-field-type-field,
+.elementor-field-type-day,
+.elementor-field-type-hour{
+    display: none!important;
+}
