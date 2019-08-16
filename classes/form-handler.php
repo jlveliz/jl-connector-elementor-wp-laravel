@@ -63,6 +63,18 @@
             }
         }
 
+        public function process_register_genre($field, $record)
+        {
+             
+            $field = $record->get_field(['id'=>'genero']);
+            if ($field) {
+                $genre = $field['genero']['value'] == 'm' ? 'Masculino' : 'Femenino';
+                $record->update_field('genero','value',$genre);
+                $record->update_field('genero','raw_value',$genre);
+                return $record;
+            }
+        }
+
 
         public function process_form_to_laravel($record,$handler) {
             
@@ -86,6 +98,7 @@
                         'name' => $raw_fields['nombre_hijo'],
                         'last_name' => $raw_fields['apellido_hijo'],
                         'age' => $raw_fields['edad_hijo'],
+                        'genre' => $raw_fields['genero'],
     
                     ];
                     //representant
@@ -106,8 +119,8 @@
     
     
                     $message = wp_remote_retrieve_body( $response );
-    
                     
+                   
                     if($response['response']['code'] == 401 || $response['response']['code'] == 500) {
                         $handler->add_error_message($message)->send();
                         
@@ -128,6 +141,8 @@
             add_action('elementor_pro/forms/process/tel',[$this,'process_phone_number'],10,2);
             //procesa el codigo de registro
             add_action('elementor_pro/forms/process/hidden',[$this,'process_register_code'],10,2);
+            //procesa el codigo de genero
+            add_action('elementor_pro/forms/process/select',[$this,'process_register_genre'],10,2);
             //procesa todo el formulario para laravel
             add_action( 'elementor_pro/forms/new_record',[$this,'process_form_to_laravel'], 10, 2 );
 

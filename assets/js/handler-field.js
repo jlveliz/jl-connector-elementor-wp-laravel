@@ -4,7 +4,6 @@ var TOKEN = null;
 
 
 function animate(el) {
-    // debugger
     el.parentElement.parentElement.style.cssText  = "display:block!important;animation: fadeIn 1s ease-in both; ";
 }
 
@@ -189,7 +188,6 @@ var detectChangeField = (e) => {
     
     
     var otherElements = document.querySelectorAll('[data-element]');
-    debugger
     if(TOKEN) {
         var dayEl;
         var hourEl;
