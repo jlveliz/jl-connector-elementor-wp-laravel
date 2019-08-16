@@ -2,4 +2,7 @@
 .elementor-field-type-day,
 .elementor-field-type-hour{
     display: none!important;
+    animation: fadeIn 0.5s ease-in both; 
 }
+
+

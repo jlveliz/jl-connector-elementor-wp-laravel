@@ -3,9 +3,9 @@ var APIURL = null;
 var TOKEN = null;
 
 
-function animate(el, cssClass) {
-    debugger
-    el.parentElement.parentElement.style.cssText  = "display:block!important";
+function animate(el) {
+    // debugger
+    el.parentElement.parentElement.style.cssText  = "display:block!important;animation: fadeIn 1s ease-in both; ";
 }
 
 function days_of_week(keyDay) {
@@ -159,6 +159,8 @@ var detectChangeDay = (e) => {
             loadScheduleByDayField(idDay, fieldId).then((hours) => {
 
                 hourEl.removeAttribute('disabled');
+                //animate toogle
+                animate(hourEl);
                
 
                   //first Remove All Elements
@@ -227,6 +229,8 @@ var detectChangeField = (e) => {
 
                     //addEventListener to dayEL
                     dayEl.addEventListener('change',detectChangeDay)
+                    //animate toogle
+                    animate(dayEl);
 
                     //first Remove All Elements
                     for(var i = dayEl.options.length-1; i>0 ;i--){
@@ -298,9 +302,9 @@ var detectChangeAge = (e) => {
 
                     //addEventListener to fieldEl
                     fieldEl.addEventListener('change',detectChangeField)
-
                     //animate toogle
-                    animate(fieldEl,'elementor-field-type-field');
+                    animate(fieldEl);
+
 
                     //first Remove All Elements
                     for(var i = fieldEl.options.length-1; i>0 ;i--){
